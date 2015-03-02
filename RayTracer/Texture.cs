@@ -1,4 +1,5 @@
-﻿using RayTracer.Pigments;
+﻿using RayTracer.Normals;
+using RayTracer.Pigments;
 
 namespace RayTracer
 {
@@ -6,12 +7,15 @@ namespace RayTracer
     {
         public Finish Finish { get; private set; }
         public Pigment Pigment { get; private set; }
-        // TODO: interior, normal
+        public Normal Normal { get; private set; }
+        public Interior Interior { get; private set; }
 
-        public Texture(Finish finish, Pigment pigment)
+        public Texture(Finish finish, Pigment pigment, Normal normal = null, Interior interior = null)
         {
             Finish = finish;
             Pigment = pigment;
+            Normal = normal;
+            Interior = interior;
         }
     }
 }

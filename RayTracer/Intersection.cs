@@ -11,9 +11,10 @@ namespace RayTracer
         public Ray Ray { get; private set; }
         public double T { get; private set; }
 
-        private Vector3 _intersectionPoint;
-        private Vector3 _normalAtIntersection;
-        private Vector3 _reflectionAtIntersection;
+        private Vector3 _intersectionPoint; // cache computed value
+        private Vector3 _normalAtIntersection; // cache computed value
+        private Vector3 _reflectionAtIntersection; // cache computed value
+        private Vector3 _perturbedNormalAtIntersection; // cache computed value
 
         public Intersection(SceneObject sceneObject, Ray ray, double t)
         {
@@ -22,6 +23,7 @@ namespace RayTracer
             T = t;
         }
 
+        // Intersection point computed from ray and scene object
         public Vector3 IntersectionPoint
         {
             get
@@ -31,7 +33,8 @@ namespace RayTracer
             }
         }
 
-        public Vector3 NormalAtIntersection
+        // Normal (non-perturbed) at intersection point
+        public Vector3 RawNormalAtIntersection
         {
             get
             {
@@ -40,10 +43,22 @@ namespace RayTracer
             }
         }
 
+        // Perturbed normal at intersection point, equals to NormalAtIntersection if no perturbation
+        public Vector3 NormalAtIntersection
+        {
+            get
+            {
+                _perturbedNormalAtIntersection = _perturbedNormalAtIntersection ?? (SceneObject.Texture.Normal == null ? RawNormalAtIntersection : SceneObject.Texture.Normal.PerturbNormal(this));
+                return _perturbedNormalAtIntersection;
+            }
+        }
+
+        // Reflected vector at intersection point
         public Vector3 ReflectionAtIntersection
         {
             get
             {
+                //R = D - 2 * [ N . D ] * N
                 _reflectionAtIntersection = _reflectionAtIntersection ?? (Ray.Direction - (2 * Vector3.DotProduct(NormalAtIntersection, Ray.Direction)) * NormalAtIntersection);
                 return _reflectionAtIntersection;
             }

@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MathUtils;
 using RayTracer;
+using RayTracer.Cameras;
 using RayTracer.Geometries;
 using RayTracer.Lights;
+using RayTracer.Normals;
 using RayTracer.Pigments;
 
 namespace RayTraceWPF
@@ -15,37 +18,74 @@ namespace RayTraceWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const int RenderWidth = 200;
-        private const int RenderHeight = 200;
+        private const int RenderWidth = 400;
+        private const int RenderHeight = 400;
         private readonly WriteableBitmap _writeableBitmap = new WriteableBitmap(RenderWidth, RenderHeight, 96, 96, PixelFormats.Bgra32, null);
+
+        private readonly Tracer _tracer;
 
         public MainWindow()
         {
             InitializeComponent();
 
             MainImage.Source = _writeableBitmap;
-        }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
             Scene scene = new Scene();
-            SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Texture(Finish.BasicPhong, new Solid(RayTracer.Color.Red)));
+            //SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Texture(Finish.BasicPhong, new Solid(RayTracer.Color.Red)));
+            SceneObject sphere1 = new SceneObject(
+                new Sphere(
+                    new Vector3(2, 0, -5),
+                    1),
+                new Texture(
+                    new Finish
+                        {
+                            Diffuse = 0,
+                            Reflection = 0.5,
+                            Transmission = 0.9,
+                        },
+                    new Solid(RayTracer.Color.White),
+                    null,
+                    new Interior
+                        {
+                            IndexOfRefraction = Interior.Glass,
+                        }));
             scene.AddObject(sphere1);
-            SceneObject sphere2 = new SceneObject(new Sphere(new Vector3(-2, 0, -5), 1), new Texture(Finish.BasicDiffuse, new Solid(RayTracer.Color.White)));
+            //SceneObject sphere2 = new SceneObject(new Sphere(new Vector3(-2, 0, -5), 1), new Texture(Finish.BasicDiffuse, new Solid(RayTracer.Color.Red)));
+            SceneObject sphere2 = new SceneObject(new Sphere(new Vector3(-2, 0, -5), 1), new Texture(new Finish
+            {
+                Diffuse = 0.5,
+                Reflection = 0.5
+            }, new Solid(RayTracer.Color.White)));
             scene.AddObject(sphere2);
             SceneObject plane1 = new SceneObject(new Plane(new Vector3(0, 0, 1), 8), new Texture(Finish.BasicPhong, new Checkboard(1, Checkboard.Axes.XY)));
+            //SceneObject plane1 = new SceneObject(new Plane(new Vector3(0, 0, 1), 8), new Texture(new Finish
+            //{
+            //    Diffuse = 0.5,
+            //    Reflection = 0.5
+            //}, new Checkboard(1, Checkboard.Axes.XY)));
             scene.AddObject(plane1);
 
             DotLight light1 = new DotLight(new Vector3(0, 5, -5), RayTracer.Color.White);
             scene.AddLight(light1);
-            DotLight light2 = new DotLight(new Vector3(0, -5, -5), RayTracer.Color.Blue);
+            DotLight light2 = new DotLight(new Vector3(0, -5, -5), RayTracer.Color.White);
             scene.AddLight(light2);
 
-            Camera camera = new Camera(new Vector3(0, 0, 0), new Vector3(0, 0, -1));
+            Camera camera = new Camera(new Vector3(0, 0, 0), new Vector3(0, 0, -5));
+            //Camera camera = new Camera(new Vector3(0, 1, 0), new Vector3(0, 0, -5));
+            //Camera camera = new Camera(new Vector3(5, 0, -5), new Vector3(1, 0, -5));
+            //Camera camera = new Camera(new Vector3(0, 0, -5), new Vector3(-1, 0, -5));
 
-            Tracer rayTracer = new Tracer(scene, camera, RenderWidth, RenderHeight);
-            RayTracer.Color[,] bitmap = rayTracer.Render();
+            _tracer = new Tracer(scene, camera, RenderWidth, RenderHeight);
+        }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            RayTracer.Color[,] bitmap = _tracer.Render();
+            sw.Stop();
+
+            MainText.Text = String.Format("{0} ms Color:{1} Vector3:{2}", sw.ElapsedMilliseconds, RayTracer.Color.AllocationCount, Vector3.AllocationCount);
             DisplayBitmap(bitmap);
         }
 
@@ -77,6 +117,14 @@ namespace RayTraceWPF
         private static byte ConvertColorComponent(double c)
         {
             return (byte) (((int) Math.Max(0, Math.Min(255, c*255))) & 255);
+        }
+
+        private void MainImage_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Point point = e.GetPosition(MainImage);
+            Vector3 direction = _tracer.Camera.ComputeRayDirection(_tracer.Width, _tracer.Height, (int)point.X, (int)point.Y);
+            Ray ray = new Ray(_tracer.Camera.Eye, direction);
+            RayTracer.Color color = _tracer.TraceRay(ray, 0, 1.0);
         }
     }
 }

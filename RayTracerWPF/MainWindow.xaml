@@ -1,17 +1,20 @@
 ﻿<Window x:Class="RayTraceWPF.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525"
+        Title="MainWindow" Height="480" Width="525"
         SnapsToDevicePixels="True">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Grid.Row="0"
-                Content="Render"
-                Click="Button_Click"/>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Content="Render"
+                    Click="Button_Click"/>
+            <TextBlock x:Name="MainText"/>
+        </StackPanel>
         <Image Grid.Row="1"
-               x:Name="MainImage"/>
+               PreviewMouseUp="MainImage_PreviewMouseUp"
+               x:Name="MainImage" Stretch="None"/>
     </Grid>
 </Window>

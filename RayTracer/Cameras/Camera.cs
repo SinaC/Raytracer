@@ -1,7 +1,7 @@
 ﻿using System;
 using MathUtils;
 
-namespace RayTracer
+namespace RayTracer.Cameras
 {
     //http://stackoverflow.com/questions/13078243/ray-tracing-camera
     //http://stackoverflow.com/questions/12892906/generate-a-vector/12892966#12892966
@@ -14,7 +14,7 @@ namespace RayTracer
         public Vector3 Right { get; private set; }
 
         public double Fov { get; private set; } // in degrees
-        public double Aspect { get; private set; } // X-Y relation
+        public double Aspect { get; private set; } // screen X-Y relation
 
         private readonly double _tanFov;
 
@@ -36,8 +36,10 @@ namespace RayTracer
             View = LookAt - Eye;
             View.Normalize();
 
-            Right = Vector3.CrossProduct(View, Up); // no need to normalize
+            Right = Vector3.CrossProduct(View, Up);
+            Right.Normalize();
             Up = Vector3.CrossProduct(Right, View); // re-base the up vector
+            Up.Normalize();
         }
 
         public Vector3 ComputeRayDirection(double x, double y)
@@ -51,7 +53,7 @@ namespace RayTracer
             return dir;
         }
 
-        // TODO: move this to a Screen class
+        // TODO: move this to a Screen/Renderer class
         public Vector3 ComputeRayDirection(int screenWidth, int screenHeight, int x, int y)
         {
             // -0.5 to cast in the center of the pixel

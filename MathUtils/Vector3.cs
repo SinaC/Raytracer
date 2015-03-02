@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Threading;
 
 namespace MathUtils
 {
     public class Vector3
     {
+        public static int AllocationCount;
+
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
@@ -15,6 +18,8 @@ namespace MathUtils
 
         public Vector3(double x, double y, double z)
         {
+            Interlocked.Increment(ref AllocationCount);
+
             X = x;
             Y = y;
             Z = z;
@@ -38,7 +43,7 @@ namespace MathUtils
             Z /= length;
         }
 
-        public static Vector3 operator +(Vector3 v1)
+        public static Vector3 operator -(Vector3 v1)
         {
             return new Vector3(-v1.X, -v1.Y, -v1.Z);
         }

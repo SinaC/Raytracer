@@ -3,6 +3,7 @@ using System.IO;
 using ImageUtils;
 using MathUtils;
 using RayTracer;
+using RayTracer.Cameras;
 using RayTracer.Geometries;
 using RayTracer.Lights;
 using RayTracer.Pigments;

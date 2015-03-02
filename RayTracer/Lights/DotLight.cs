@@ -52,8 +52,8 @@ namespace RayTracer.Lights
             }
 
             // Combine diffuse, specular, phong // TODO: soft shading
-            return Color * ((diffuse + specular + phong));
             //return Color * (intersection.SceneObject.Texture.Finish.Brillance*(diffuse + specular + phong));
+            return Color * ((diffuse + specular + phong));
         }
     }
 }

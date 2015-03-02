@@ -26,7 +26,7 @@
 
         public double Diffuse { get; set; } // How diffuse affects pigment
 
-        //public double Brillance { get; set; } // Tighness of basic diffuse illumination (better if used with specular)
+        //public double Brillance { get; set; } // Tightness of basic diffuse illumination (better if used with specular)
 
         public double Specular { get; set; } // Specular highlight
         public double SpecularRoughness { get; set; } // Highlight size
