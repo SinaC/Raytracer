@@ -12,12 +12,14 @@ namespace RayTracer.Geometries
         {
             Normal = normal;
             Distance = distance;
+            Normal.Normalize();
         }
 
         public override bool HasIntersections(Ray ray)
         {
-            double tmp = Vector3.DotProduct(ray.Direction, Normal);
-            return Math.Abs(tmp) >= Epsilon;
+            //double tmp = Vector3.DotProduct(ray.Direction, Normal);
+            //return Math.Abs(tmp) >= Epsilon;
+            return false; // quick and dirty hack, infinite planes have no interesting shadows
         }
 
         public override bool ComputeNearestIntersection(Ray ray, out double t)
@@ -38,6 +40,11 @@ namespace RayTracer.Geometries
         public override Vector3 ComputeNormal(Vector3 point)
         {
             return Normal;
+        }
+
+        public override bool Contains(Vector3 point)
+        {
+            return false;
         }
     }
 }

@@ -3,8 +3,6 @@ using MathUtils;
 
 namespace RayTracer.Cameras
 {
-    //http://stackoverflow.com/questions/13078243/ray-tracing-camera
-    //http://stackoverflow.com/questions/12892906/generate-a-vector/12892966#12892966
     public class Camera
     {
         public Vector3 Eye { get; private set; }

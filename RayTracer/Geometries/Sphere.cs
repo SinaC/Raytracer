@@ -17,10 +17,17 @@ namespace RayTracer.Geometries
 
         public override bool HasIntersections(Ray ray)
         {
-            double a = 1;
-            double b = 2*(Vector3.DotProduct(ray.Origin, ray.Direction) - Vector3.DotProduct(ray.Direction, Center));
-            double c = (ray.Origin - Center).LengthSquared - Radius*Radius;
-            return b*b - 4*a*c >= 0;
+            //double a = 1;
+            //double b = 2*(Vector3.DotProduct(ray.Origin, ray.Direction) - Vector3.DotProduct(ray.Direction, Center));
+            //double c = (ray.Origin - Center).LengthSquared - Radius*Radius;
+            //return b*b - 4*a*c >= 0;
+            Vector3 diff = Center - ray.Origin;
+            double t = Vector3.DotProduct(diff, ray.Direction);
+            if (t < 0)
+                return false;
+            diff -= ray.Direction*t;
+            double dist2 = diff.LengthSquared;
+            return dist2 <= Radius*Radius;
         }
 
         public override bool ComputeNearestIntersection(Ray ray, out double t)
@@ -36,20 +43,25 @@ namespace RayTracer.Geometries
             // delta = b^2 - 4*a*c
             // t0 = -b - sqrt(delta) / 2*a // if positive, it's the smaller
             // t1  = -b + sqrt(delta) / 2*a // else, it's the smaller
-            double a = 1;
-            double b = 2*(Vector3.DotProduct(ray.Origin, ray.Direction) - Vector3.DotProduct(ray.Direction, Center));
+            // a == 1 and b is even -->
+            // b2 = (Xo*Xd - Xd*Xc + Yo*Yd - Yd*Yc + Zo*Zd - Zd*Zc) = (o.d) - (d.c)
+            // c = ||o-c||^2 - R^2
+            // delta2 = b2^2-c
+            // t0 = -b2 - sqrt(delta)
+            // t1 = -b2 + sqrt(delta)
+            double b = (Vector3.DotProduct(ray.Origin, ray.Direction) - Vector3.DotProduct(ray.Direction, Center));
             double c = (ray.Origin - Center).LengthSquared - Radius*Radius;
-            double delta = b*b - 4*a*c;
+            double delta = b*b - c;
             if (delta < 0)
                 return false;
             double sqrtDelta = Math.Sqrt(delta);
-            double t0 = (-b - sqrtDelta)/(2*a);
+            double t0 = (-b - sqrtDelta);
             if (t0 > 0)
             {
                 t = t0;
                 return true;
             }
-            double t1 = (-b + sqrtDelta)/(2*a);
+            double t1 = (-b + sqrtDelta);
             t = t1;
             return true;
         }
@@ -59,6 +71,19 @@ namespace RayTracer.Geometries
             Vector3 normal = point - Center;
             normal.Normalize();
             return normal;
+        }
+
+        public override bool Contains(Vector3 point)
+        {
+            // Add a little bit to the actual radius to be more tolerant
+            // of rounding errors that would incorrectly exclude a 
+            // point that should be inside the sphere.
+            double r = Radius + Epsilon;
+
+            // A point is inside the sphere if the square of its distance 
+            // from the center is within the square of the radius.
+            Vector3 diff = point - Center;
+            return diff.LengthSquared <= (r * r);
         }
     }
 }

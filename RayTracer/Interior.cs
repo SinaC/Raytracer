@@ -2,7 +2,6 @@
 {
     public class Interior
     {
-        //http://en.wikipedia.org/wiki/List_of_refractive_indices
         public const double Air = 1.000293;
         public const double Vacuum = 1.0;
         public const double Water = 1.333;

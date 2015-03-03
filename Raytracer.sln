@@ -11,6 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracerConsole", "RayTrac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageUtils", "ImageUtils\ImageUtils.csproj", "{1ABBF2CF-1303-4144-8522-70BF33BBFAC0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{AA3D73F0-F72B-4F4E-A9BB-493BFC35CCA4}"
+	ProjectSection(SolutionItems) = preProject
+		Doc.txt = Doc.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -18,10 +18,14 @@ namespace RayTracer.Lights
         {
             Vector3 direction = Position - intersection.IntersectionPoint;
             direction.Normalize();
-            bool shadow = false; // TODO: check shadow + soft shading
-            if (shadow)
-                return new Color(0, 0, 0);
+            Vector3 position = intersection.IntersectionPoint + direction*0.001;
 
+            // TODO: shadow
+            //Ray lightRay = new Ray(position, direction);
+            //bool shadow = scene.Intersects(lightRay) != null;
+            //if (shadow)
+            //    return new Color(0, 0, 0);
+            
             // Diffuse
             double diffuse = 0;
             if (intersection.SceneObject.Texture.Finish.Diffuse > 0)
@@ -52,8 +56,7 @@ namespace RayTracer.Lights
             }
 
             // Combine diffuse, specular, phong // TODO: soft shading
-            //return Color * (intersection.SceneObject.Texture.Finish.Brillance*(diffuse + specular + phong));
-            return Color * ((diffuse + specular + phong));
+            return Color * ((diffuse + specular + phong)); // TODO: multiply by brillance ?
         }
     }
 }

@@ -1,0 +1,30 @@
+general
+http://www.flipcode.com/archives/Raytracing_Topics_Techniques-Part_2_Phong_Mirrors_and_Shadows.shtml
+http://www.hxa.name/minilight/
+http://kevinbeason.com/smallpt/
+http://code.google.com/p/directcompute-rtrt/source/browse/#svn%2Ftrunk%2FSource
+http://code.google.com/p/tokaspt/
+https://www.cs.unc.edu/~rademach/xroads-RT/RTarticle.html
+http://blogs.msdn.com/b/lukeh/archive/2007/04/03/a-ray-tracer-in-c-3-0.aspx
+http://www.codeproject.com/Articles/19732/Simple-Ray-Tracing-in-C
+https://www.cl.cam.ac.uk/teaching/1999/AGraphHCI/SMAG/advgraphnotes.html
+http://www.cosinekitty.com/raytrace/
+http://josiahmanson.com/prose/speed_cpp_csharp/
+
+cameras
+http://stackoverflow.com/questions/13078243/ray-tracing-camera
+http://stackoverflow.com/questions/12892906/generate-a-vector/12892966#12892966
+
+intersections
+http://www.realtimerendering.com/intersections.html
+http://plib.sourceforge.net/sg/index.html
+
+reflection/refracted ray
+http://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
+http://www.flipcode.com/archives/reflection_transmission.pdf
+
+index of refraction
+http://en.wikipedia.org/wiki/List_of_refractive_indices
+
+phong
+https://www.opengl.org/sdk/docs/tutorials/ClockworkCoders/lighting.php

@@ -48,6 +48,14 @@ namespace RayTracer
         public SceneObject Intersects(Ray ray)
         {
             return _sceneObjects.FirstOrDefault(o => o.Geometry != null && o.Geometry.HasIntersections(ray));
+            //foreach(SceneObject o in SceneObjects)
+            //{
+            //    double t;
+            //    bool intersects = o.Geometry.ComputeNearestIntersection(ray, out t);
+            //    if (intersects && t >= 0)
+            //        return o;
+            //}
+            //return null;
         }
 
         public Intersection NearestIntersection(Ray ray)

@@ -68,6 +68,12 @@ namespace MathUtils
             return new Vector3(v1.X * d, v1.Y * d, v1.Z * d);
         }
 
+        public static Vector3 operator /(Vector3 v1, double d)
+        {
+            double inv = 1/d;
+            return new Vector3(v1.X * inv, v1.Y * inv, v1.Z * inv);
+        }
+
         public static double DotProduct(Vector3 v1, Vector3 v2)
         {
             return v1.X*v2.X + v1.Y*v2.Y + v1.Z*v2.Z;

@@ -15,10 +15,17 @@ namespace RayTracer.Normals
         // Doesn't provide visible results :/
         public override Vector3 PerturbNormal(Intersection intersection)
         {
-            float x = SimplexNoise.Generate((float)intersection.IntersectionPoint.X/20);
-            float y = SimplexNoise.Generate((float)intersection.IntersectionPoint.Y/20);
-            float z = SimplexNoise.Generate((float)intersection.IntersectionPoint.Z/20);
-            return new Vector3(intersection.RawNormalAtIntersection.X + x * Factor, intersection.RawNormalAtIntersection.Y + y * Factor, intersection.RawNormalAtIntersection.Z + z * Factor);
+            //float x = SimplexNoise.Generate((float)intersection.IntersectionPoint.X);
+            //float y = SimplexNoise.Generate((float)intersection.IntersectionPoint.Y);
+            //float z = SimplexNoise.Generate((float)intersection.IntersectionPoint.Z);
+            //Vector3 newNormal = new Vector3(intersection.RawNormalAtIntersection.X + x * Factor, intersection.RawNormalAtIntersection.Y + y * Factor, intersection.RawNormalAtIntersection.Z + z * Factor);
+            //newNormal.Normalize();
+            //return newNormal;
+
+            double noise = SimplexNoise.Generate((float)(intersection.IntersectionPoint.X * Factor), (float)(intersection.IntersectionPoint.Y * Factor), (float)(intersection.IntersectionPoint.Z * Factor));
+            Vector3 newNormal = new Vector3(intersection.RawNormalAtIntersection.X + noise, intersection.RawNormalAtIntersection.Y + noise, intersection.RawNormalAtIntersection.Z + noise);
+            newNormal.Normalize();
+            return newNormal;
         }
     }
 }

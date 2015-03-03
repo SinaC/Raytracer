@@ -10,7 +10,7 @@ namespace RayTracer
     public class Tracer
     {
         private const double SmallForwardStep = 0.01;
-        private const int MaxReflectionDepth = 6;
+        private const int MaxDepth = 6;
         private const double MinAttenuation = 0.03;
 
         public Scene Scene { get; private set; }
@@ -57,7 +57,7 @@ namespace RayTracer
         {
             Intersection intersection = Scene.NearestIntersection(ray);
             if (intersection == null)
-                return new Color(0,0,0); // TODO: background shader
+                return Color.Black; // TODO: background shader
             //else
             //    System.Diagnostics.Debug.WriteLine("TraceRay: intersection T: {0:F6}", intersection.T);
             return Shade(intersection, depth, attenuation);
@@ -71,22 +71,27 @@ namespace RayTracer
             // TODO: ambient
             Color diffuseColor = ComputeDiffuseColor(intersection);
             Color reflectedColor = Color.Black;
-            if (intersection.SceneObject.Texture.Finish.Reflection > 0 && depth < MaxReflectionDepth)
+            if (intersection.SceneObject.Texture.Finish.Reflection > 0 && depth < MaxDepth)
                 reflectedColor = ComputeReflectedColor(intersection, depth, attenuation);
             Color transmittedColor = Color.Black;
             // TODO: debug transmission
-            if (intersection.SceneObject.Texture.Finish.Transmission > 0 && intersection.SceneObject.Texture.Interior != null && depth < MaxReflectionDepth) // TODO: refraction depth
+            if (intersection.SceneObject.Texture.Finish.Transmission > 0 && intersection.SceneObject.Texture.Interior != null && depth < MaxDepth)
                 transmittedColor = ComputeTransmittedColor(intersection, depth, attenuation);
 
-            return attenuation * (intersection.SceneObject.Texture.Pigment.ComputeColor(intersection.IntersectionPoint) * (diffuseColor + reflectedColor + transmittedColor));
+            return attenuation * (diffuseColor + reflectedColor + transmittedColor);
         }
 
         private Color ComputeDiffuseColor(Intersection intersection)
         {
-            Color color = new Color(0, 0, 0);
-            return Scene.Lights
+            //Color color = new Color(0, 0, 0);
+            //color = Scene.Lights
+            //    .Select(light => light.GetColor(intersection, Scene))
+            //    .Aggregate(color, (current, lightColor) => current + lightColor);
+            //return intersection.SceneObject.Texture.Pigment.ComputeColor(intersection.IntersectionPoint)*color;
+             Color color = Scene.Lights
                 .Select(light => light.GetColor(intersection, Scene))
-                .Aggregate(color, (current, lightColor) => current + lightColor);
+                .Aggregate(Color.Black, (current, lightColor) => current + lightColor);
+            return intersection.SceneObject.Texture.Pigment.ComputeColor(intersection.IntersectionPoint) * color;
         }
 
         private Color ComputeReflectedColor(Intersection intersection, int depth, double attenuation)
@@ -106,7 +111,6 @@ namespace RayTracer
             // ray is entering from atmosphere
             double ratio = Interior.Air/intersection.SceneObject.Texture.Interior.IndexOfRefraction;
 
-            //http://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
             // Compute transmitted ray
             Vector3 normal = intersection.NormalAtIntersection;
             double ci = Vector3.DotProduct(intersection.Ray.Direction, normal);
@@ -119,10 +123,10 @@ namespace RayTracer
             double criticalAngle = 1.0 + ratio2*(ci2 - 1.0);
             if (criticalAngle < 0) // total internal reflection
             {
-                Vector3 direction = intersection.Ray.Direction - ((2*ci)*normal);
+                Vector3 direction = intersection.Ray.Direction - ((2 * ci) * normal);
                 Vector3 origin = intersection.IntersectionPoint + (direction * SmallForwardStep); // avoid colliding immediately with intersected object
                 Ray ray = new Ray(origin, direction);
-                Color color = TraceRay(ray, depth + 1, attenuation*intersection.SceneObject.Texture.Finish.Transmission) * (1-intersection.SceneObject.Texture.Finish.Reflection);
+                Color color = TraceRay(ray, depth + 1, attenuation * intersection.SceneObject.Texture.Finish.Transmission) * (1 - intersection.SceneObject.Texture.Finish.Reflection);
                 return color;
             }
             else // normal transmission
