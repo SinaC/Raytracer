@@ -48,7 +48,9 @@ namespace RayTracer
         {
             get
             {
-                _perturbedNormalAtIntersection = _perturbedNormalAtIntersection ?? (SceneObject.Texture.Normal == null ? RawNormalAtIntersection : SceneObject.Texture.Normal.PerturbNormal(this));
+                _perturbedNormalAtIntersection = _perturbedNormalAtIntersection ?? (SceneObject.Material.Normal == null
+                                                                                        ? RawNormalAtIntersection
+                                                                                        : SceneObject.Material.Normal.PerturbNormal(this));
                 return _perturbedNormalAtIntersection;
             }
         }
@@ -59,7 +61,7 @@ namespace RayTracer
             get
             {
                 //R = D - 2 * [ N . D ] * N
-                _reflectionAtIntersection = _reflectionAtIntersection ?? (Ray.Direction - (2 * Vector3.DotProduct(NormalAtIntersection, Ray.Direction)) * NormalAtIntersection);
+                _reflectionAtIntersection = _reflectionAtIntersection ?? (Ray.Direction - (2*Vector3.DotProduct(NormalAtIntersection, Ray.Direction))*NormalAtIntersection);
                 return _reflectionAtIntersection;
             }
         }

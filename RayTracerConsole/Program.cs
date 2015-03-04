@@ -95,11 +95,11 @@ namespace RayTraceConsole
             const int height = 200;
 
             Scene scene = new Scene();
-            SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Texture(new Finish(), new Solid(new Color(1,0,0))));
+            SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Material(new Finish(), new Solid(new Color(1,0,0))));
             scene.AddObject(sphere1);
-            SceneObject sphere2 = new SceneObject(new Sphere(new Vector3(-2, 0, -5), 1), new Texture(new Finish(), new Solid(new Color(1, 1, 1))));
+            SceneObject sphere2 = new SceneObject(new Sphere(new Vector3(-2, 0, -5), 1), new Material(new Finish(), new Solid(new Color(1, 1, 1))));
             scene.AddObject(sphere2);
-            SceneObject plane1 = new SceneObject(new Plane(new Vector3(0, 0, 1), 8), new Texture(new Finish(), new Solid(new Color(1, 1, 1))));
+            SceneObject plane1 = new SceneObject(new Plane(new Vector3(0, 0, 1), 8), new Material(new Finish(), new Solid(new Color(1, 1, 1))));
             scene.AddObject(plane1);
 
             DotLight light1 = new DotLight(new Vector3(0, 5, -5), new Color(1, 1, 1));

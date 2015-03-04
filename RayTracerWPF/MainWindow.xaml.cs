@@ -31,7 +31,7 @@ namespace RayTraceWPF
 
             MainImage.Source = _writeableBitmap;
 
-            Texture glassTexture = new Texture(
+            Material glassTexture = new Material(
                 new Finish
                     {
                         Diffuse = 0.0,
@@ -48,7 +48,7 @@ namespace RayTraceWPF
             Scene scene = new Scene();
             //SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Texture(Finish.BasicPhong, new Solid(RayTracer.Color.Red)));
             //SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Texture(Finish.BasicPhong, new Noisy(2)));
-            SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Texture(Finish.BasicPhong, new Solid(RayTracer.Color.Red), new Bumps(2)));
+            SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Material(Finish.BasicPhong, new Solid(RayTracer.Color.Red), new Bumps(2)));
             //SceneObject sphere1 = new SceneObject(
             //    new Sphere(new Vector3(2, 0, -5),1), glassTexture);
             scene.AddObject(sphere1);
@@ -63,11 +63,13 @@ namespace RayTraceWPF
             //SceneObject plane1 = new SceneObject(new Plane(new Vector3(0, 0, 1), 8), new Texture(Finish.BasicPhong, new Checkboard(1, Checkboard.Axes.XY)));
             SceneObject plane1 = new SceneObject(
                 new Plane(new Vector3(0, 0, 1), 8),
-                new Texture(
+                new Material(
                     new Finish
                         {
                             Diffuse = 0.5,
                             Reflection = 0.5,
+                            Phong = 0.5,
+                            PhongSize = 40,
                         },
                     new Checkboard(RayTracer.Color.White, RayTracer.Color.Black, 1, Checkboard.Axes.XY)));
             scene.AddObject(plane1);
@@ -86,8 +88,9 @@ namespace RayTraceWPF
             //scene.AddLight(light1);
 
             //Camera camera = new Camera(new Vector3(0, 0, 10), new Vector3(0, 0, -5));
+            Camera camera = new Camera(new Vector3(0, 0, 0), new Vector3(0, 0, -5));
             //Camera camera = new Camera(new Vector3(0, 1, 0), new Vector3(0, 1, -5));
-            Camera camera = new Camera(new Vector3(0, 1, 0), new Vector3(0, 0, -5));
+            //Camera camera = new Camera(new Vector3(0, 1, 0), new Vector3(0, 0, -5));
             //Camera camera = new Camera(new Vector3(5, 0, -5), new Vector3(1, 0, -5));
             //Camera camera = new Camera(new Vector3(0, 0, -5), new Vector3(-1, 0, -5));
 

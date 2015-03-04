@@ -71,11 +71,11 @@ namespace RayTracer
             // TODO: ambient
             Color diffuseColor = ComputeDiffuseColor(intersection);
             Color reflectedColor = Color.Black;
-            if (intersection.SceneObject.Texture.Finish.Reflection > 0 && depth < MaxDepth)
+            if (intersection.SceneObject.Material.Finish.Reflection > 0 && depth < MaxDepth)
                 reflectedColor = ComputeReflectedColor(intersection, depth, attenuation);
             Color transmittedColor = Color.Black;
             // TODO: debug transmission
-            if (intersection.SceneObject.Texture.Finish.Transmission > 0 && intersection.SceneObject.Texture.Interior != null && depth < MaxDepth)
+            if (intersection.SceneObject.Material.Finish.Transmission > 0 && intersection.SceneObject.Material.Interior != null && depth < MaxDepth)
                 transmittedColor = ComputeTransmittedColor(intersection, depth, attenuation);
 
             return attenuation * (diffuseColor + reflectedColor + transmittedColor);
@@ -91,7 +91,7 @@ namespace RayTracer
              Color color = Scene.Lights
                 .Select(light => light.GetColor(intersection, Scene))
                 .Aggregate(Color.Black, (current, lightColor) => current + lightColor);
-            return intersection.SceneObject.Texture.Pigment.ComputeColor(intersection.IntersectionPoint) * color;
+            return intersection.SceneObject.Material.Pigment.ComputeColor(intersection.IntersectionPoint) * color;
         }
 
         private Color ComputeReflectedColor(Intersection intersection, int depth, double attenuation)
@@ -99,7 +99,7 @@ namespace RayTracer
             // Compute new ray from intersection point and reflected direction
             Vector3 origin = intersection.IntersectionPoint + (intersection.ReflectionAtIntersection * SmallForwardStep); // avoid colliding immediately with intersected object
             Ray ray = new Ray(origin, intersection.ReflectionAtIntersection);
-            Color color = TraceRay(ray, depth + 1, attenuation*intersection.SceneObject.Texture.Finish.Reflection);
+            Color color = TraceRay(ray, depth + 1, attenuation*intersection.SceneObject.Material.Finish.Reflection);
             return color;
         }
 
@@ -109,7 +109,7 @@ namespace RayTracer
 
 
             // ray is entering from atmosphere
-            double ratio = Interior.Air/intersection.SceneObject.Texture.Interior.IndexOfRefraction;
+            double ratio = Interior.Air/intersection.SceneObject.Material.Interior.IndexOfRefraction;
 
             // Compute transmitted ray
             Vector3 normal = intersection.NormalAtIntersection;
@@ -126,7 +126,7 @@ namespace RayTracer
                 Vector3 direction = intersection.Ray.Direction - ((2 * ci) * normal);
                 Vector3 origin = intersection.IntersectionPoint + (direction * SmallForwardStep); // avoid colliding immediately with intersected object
                 Ray ray = new Ray(origin, direction);
-                Color color = TraceRay(ray, depth + 1, attenuation * intersection.SceneObject.Texture.Finish.Transmission) * (1 - intersection.SceneObject.Texture.Finish.Reflection);
+                Color color = TraceRay(ray, depth + 1, attenuation * intersection.SceneObject.Material.Finish.Transmission) * (1 - intersection.SceneObject.Material.Finish.Reflection);
                 return color;
             }
             else // normal transmission
@@ -134,7 +134,7 @@ namespace RayTracer
                 Vector3 direction = (intersection.Ray.Direction*ratio) + ( normal * ( ratio * ci - Math.Sqrt(criticalAngle)));
                 Vector3 origin = intersection.IntersectionPoint + (direction * SmallForwardStep); // avoid colliding immediately with intersected object
                 Ray ray = new Ray(origin, direction);
-                Color color = TraceRay(ray, depth + 1, attenuation * intersection.SceneObject.Texture.Finish.Transmission);
+                Color color = TraceRay(ray, depth + 1, attenuation * intersection.SceneObject.Material.Finish.Transmission);
                 return color;
             }
         }

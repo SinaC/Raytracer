@@ -5,12 +5,12 @@ namespace RayTracer
     public class SceneObject
     {
         public Geometry Geometry { get; private set; }
-        public Texture Texture { get; private set; }
+        public Material Material { get; private set; }
 
-        public SceneObject(Geometry geometry, Texture texture)
+        public SceneObject(Geometry geometry, Material material)
         {
             Geometry = geometry;
-            Texture = texture;
+            Material = material;
         }
     }
 }

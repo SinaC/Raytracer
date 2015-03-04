@@ -61,7 +61,7 @@
     <Compile Include="Pigments\Checkboard.cs" />
     <Compile Include="Pigments\Plain.cs" />
     <Compile Include="Pigments\Pigment.cs" />
-    <Compile Include="Texture.cs" />
+    <Compile Include="Material.cs" />
     <Compile Include="Turbulences\NoiseMaker.cs" />
     <Compile Include="Turbulences\PerlinNoise.cs" />
     <Compile Include="Turbulences\SimplexNoise.cs" />
@@ -72,6 +72,7 @@
       <Name>MathUtils</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
