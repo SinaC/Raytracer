@@ -1,0 +1,168 @@
+using RayTracer.Engine;
+using RayTracer.Engine.Cameras;
+using RayTracer.Engine.Geometries;
+using RayTracer.Engine.Lights;
+using RayTracer.Engine.Normals;
+using RayTracer.Engine.Pigments;
+using System;
+using System.Diagnostics;
+using System.Numerics;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
+namespace RayTraceWPF
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private const int RenderWidth = 400;
+        private const int RenderHeight = 400;
+        private WriteableBitmap _writeableBitmap { get; } = new WriteableBitmap(RenderWidth, RenderHeight, 96, 96, PixelFormats.Bgra32, null);
+
+        private readonly Tracer _tracer;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            MainImage.Source = _writeableBitmap;
+
+            Material glassTexture = new Material(
+                new Finish
+                    {
+                        Diffuse = 0.0f,
+                        Reflection = 0.2f,
+                        Transmission = 0.8f,
+                    },
+                new Solid(RayTracer.Engine.Color.White),
+                null,
+                new Interior
+                    {
+                        IndexOfRefraction = Interior.Glass,
+                    });
+
+            Material greenIceTexture = new Material(
+                new Finish
+                {
+                    Diffuse = 0.1f,
+                    Reflection = 0.2f,
+                    Transmission = 0.7f,
+                },
+                new Solid(RayTracer.Engine.Color.Green),
+                null,
+                new Interior
+                {
+                    IndexOfRefraction = Interior.Ice,
+                });
+
+            Scene scene = new Scene();
+            //SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Texture(Finish.BasicPhong, new Solid(RayTracer.Color.Red)));
+            //SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Texture(Finish.BasicPhong, new Noisy(2)));
+            SceneObject sphere1 = new SceneObject(new Sphere(new Vector3(2, 0, -5), 1), new Material(Finish.BasicPhong, new Solid(RayTracer.Engine.Color.Red), new Bumps(2)));
+            //SceneObject sphere1 = new SceneObject(
+            //    new Sphere(new Vector3(2, 0, -5),1), glassTexture);
+            scene.AddObject(sphere1);
+            //SceneObject sphere2 = new SceneObject(new Sphere(new Vector3(-2, 0, -5), 1), new Texture(Finish.BasicDiffuse, new Checkboard(RayTracer.Color.Red, RayTracer.Color.Yellow)));
+            SceneObject sphere2 = new SceneObject(new Sphere(new Vector3(-2, 0, -5), 1), glassTexture);
+            //SceneObject sphere2 = new SceneObject(new Sphere(new Vector3(-2, 0, -5), 1), new Texture(new Finish
+            //{
+            //    Diffuse = 0.5,
+            //    Reflection = 0.5
+            //}, new Solid(RayTracer.Color.White)));
+            scene.AddObject(sphere2);
+            //SceneObject plane1 = new SceneObject(new Plane(new Vector3(0, 0, 1), 8), new Texture(Finish.BasicPhong, new Checkboard(1, Checkboard.Axes.XY)));
+            SceneObject plane1 = new SceneObject(
+                new RayTracer.Engine.Geometries.Plane(new Vector3(0, 0, 1), 8),
+                new Material(
+                    new Finish
+                        {
+                            Diffuse = 0.5f,
+                            Reflection = 0.5f,
+                            Phong = 0.5f,
+                            PhongSize = 40,
+                        },
+                    new Checkboard(RayTracer.Engine.Color.White, RayTracer.Engine.Color.Black, 1, Checkboard.Axes.XY)));
+            scene.AddObject(plane1);
+
+            SceneObject torus1 = new SceneObject(new Torus(2, 0.5f), greenIceTexture);
+            //SceneObject torus1 = new SceneObject(new Torus(2, 0.5f), new Material(Finish.BasicDiffuse, new Solid(RayTracer.Engine.Color.Cyan)));
+            scene.AddObject(torus1);
+
+            DotLight light1 = new DotLight(new Vector3(0, 5, -5), RayTracer.Engine.Color.White);
+            scene.AddLight(light1);
+            DotLight light2 = new DotLight(new Vector3(0, -5, -5), RayTracer.Engine.Color.White);
+            scene.AddLight(light2);
+            //DotLight light3 = new DotLight(new Vector3(0, 0, 20), RayTracer.Engine.Color.White);
+            //scene.AddLight(light3);
+            //DotLight light1 = new DotLight(new Vector3(0, 5, 0), RayTracer.Color.White);
+            //scene.AddLight(light1);
+
+            //Camera camera = new Camera(new Vector3(0, 0, 10), new Vector3(0, 0, -5));
+            //Camera camera = new Camera(new Vector3(0, 0, 0), new Vector3(0, 0, -5));
+            Camera camera = new Camera(new Vector3(0, 1, 0), new Vector3(0, 1, -5));
+            //Camera camera = new Camera(new Vector3(0, 1, 0), new Vector3(0, 0, -5));
+            //Camera camera = new Camera(new Vector3(5, 0, -5), new Vector3(1, 0, -5));
+            //Camera camera = new Camera(new Vector3(0, 0, -5), new Vector3(-1, 0, -5));
+
+            _tracer = new Tracer(scene, camera, RenderWidth, RenderHeight);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            RayTracer.Engine.Color[,] bitmap = _tracer.Render();
+            sw.Stop();
+
+            MainText.Text = String.Format("{0} ms Color:{1} Vector3:{2}", sw.ElapsedMilliseconds, RayTracer.Engine.Color.AllocationCount, -1);
+            DisplayBitmap(bitmap);
+        }
+
+        private void DisplayBitmap(RayTracer.Engine.Color[,] bitmap)
+        {
+            // Create an array of pixels to contain pixel color values
+            uint[] pixels = new uint[RenderWidth * RenderHeight];
+            int offset = 0;
+            for (int y = 0; y < RenderHeight; y++)
+            {
+                for (int x = 0; x < RenderWidth; x++)
+                {
+                    RayTracer.Engine.Color color = bitmap[x, y];
+
+                    //float value = SimplexNoise.Generate((float)x/10, (float)y/10) * 128 + 128;
+                    //byte red = (byte)value;
+
+                    byte red = ConvertColorComponent(color.R);
+                    byte green = ConvertColorComponent(color.G);
+                    byte blue = ConvertColorComponent(color.B);
+                    byte alpha = 255;
+
+                    pixels[offset] = (uint)((alpha << 24) + (red << 16) + (green << 8) + blue);
+                    offset++;
+                }
+            }
+
+            // apply pixels to bitmap
+            _writeableBitmap.WritePixels(new Int32Rect(0, 0, RenderWidth, RenderHeight), pixels, RenderWidth * _writeableBitmap.Format.BitsPerPixel / 8, 0);
+        }
+
+        private static byte ConvertColorComponent(double c)
+        {
+            return (byte) (((int) Math.Max(0, Math.Min(255, c*255))) & 255);
+        }
+
+        private void MainImage_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Point point = e.GetPosition(MainImage);
+            int x = (int) point.X;
+            int y = _tracer.Height - (int) point.Y;
+            Vector3 direction = _tracer.Camera.ComputeRayDirection(_tracer.Width, _tracer.Height, x, y);
+            Ray ray = new Ray(_tracer.Camera.Eye, direction);
+            RayTracer.Engine.Color color = _tracer.TraceRay(ray, 0, 1.0f);
+            MainText.Text = color.ToString();
+        }
+    }
+}

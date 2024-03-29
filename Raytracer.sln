@@ -1,20 +1,23 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracerWPF", "RayTracerWPF\RayTracerWPF.csproj", "{B40C4034-AFD4-4A11-A8C4-CE2F780D0118}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPF.App", "WPF.App\WPF.App.csproj", "{B40C4034-AFD4-4A11-A8C4-CE2F780D0118}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracer", "RayTracer\RayTracer.csproj", "{0C9BC459-3C04-4F27-B568-B71AB809E0AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine", "Engine\Engine.csproj", "{0C9BC459-3C04-4F27-B568-B71AB809E0AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathUtils", "MathUtils\MathUtils.csproj", "{E4D9B55C-4474-40AE-9B21-C21838ABA7A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathUtils", "MathUtils\MathUtils.csproj", "{E4D9B55C-4474-40AE-9B21-C21838ABA7A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracerConsole", "RayTracerConsole\RayTracerConsole.csproj", "{3972A31C-6D18-403D-B134-2E7980D28A3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console.App", "Console.App\Console.App.csproj", "{3972A31C-6D18-403D-B134-2E7980D28A3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageUtils", "ImageUtils\ImageUtils.csproj", "{1ABBF2CF-1303-4144-8522-70BF33BBFAC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageUtils", "ImageUtils\ImageUtils.csproj", "{1ABBF2CF-1303-4144-8522-70BF33BBFAC0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{AA3D73F0-F72B-4F4E-A9BB-493BFC35CCA4}"
 	ProjectSection(SolutionItems) = preProject
 		Doc.txt = Doc.txt
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{98C9CDBD-B1A4-476D-8D4D-5941EEC4DB87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,5 +48,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B40C4034-AFD4-4A11-A8C4-CE2F780D0118} = {98C9CDBD-B1A4-476D-8D4D-5941EEC4DB87}
+		{3972A31C-6D18-403D-B134-2E7980D28A3A} = {98C9CDBD-B1A4-476D-8D4D-5941EEC4DB87}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F23B4F4B-B584-47E0-BB7A-4E83ED322340}
 	EndGlobalSection
 EndGlobal
