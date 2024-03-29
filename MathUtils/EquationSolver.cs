@@ -4,28 +4,28 @@ namespace MathUtils
 {
     public static class EquationSolver
     {
-        private const double Epsilon = 0.000000001;
+        private const float Epsilon = 0.000000001f;
 
-        public static int SolveQuadric(double[] x, double[] results)
+        public static int SolveQuadric(float[] x, float[] results)
         {
             // x[0] * y^2 + x[1] * y + x[2]
             //  a            b          c
             // discr = b^2 - 4*a*c
-            double discr = x[1]*x[1] - 4.0*x[0]*x[2];
+            float discr = x[1]*x[1] - 4.0f*x[0]*x[2];
             if (discr < 0.0)
                 return 0;
             int index = 0;
-            double sqrt = Math.Sqrt(discr);
-            results[index++] = (-x[1] - sqrt)/(2.0*x[0]);
-            results[index++] = (-x[1] + sqrt)/(2.0*x[0]);
+            float sqrt = (float)Math.Sqrt(discr);
+            results[index++] = (-x[1] - sqrt)/(2.0f*x[0]);
+            results[index++] = (-x[1] + sqrt)/(2.0f*x[0]);
             return index;
         }
 
-        public static int SolveCubic(double[] x, double[] results)
+        public static int SolveCubic(float[] x, float[] results)
         {
-            double a1, a2, a3;
+            float a1, a2, a3;
 
-            double a0 = x[0];
+            float a0 = x[0];
             if (Math.Abs(a0 - 0.0) < Epsilon)
                 return 0;
             else
@@ -44,30 +44,30 @@ namespace MathUtils
                 }
             }
 
-            double sQ;
-            double a12 = a1*a1;
-            double q = (a12 - 3.0*a2)/9.0;
-            double r = (a1*(a12 - 4.5*a2) + 13.5*a3)/27.0;
-            double q3 = q*q*q;
-            double r2 = r*r;
-            double d = q3 - r2;
-            double an = a1/3.0;
+            float sQ;
+            float a12 = a1*a1;
+            float q = (a12 - 3.0f*a2)/9.0f;
+            float r = (a1*(a12 - 4.5f*a2) + 13.5f*a3)/27.0f;
+            float q3 = q*q*q;
+            float r2 = r*r;
+            float d = q3 - r2;
+            float an = a1/3.0f;
 
             if (d >= 0.0)
             {
                 // Three real roots.
-                d = r/Math.Sqrt(q3);
-                double theta = Math.Acos(d)/3.0;
-                sQ = -2.0*Math.Sqrt(q);
+                d = r/(float)Math.Sqrt(q3);
+                float theta = (float)Math.Acos(d)/3.0f;
+                sQ = -2.0f*(float)Math.Sqrt(q);
 
-                results[0] = sQ*Math.Cos(theta) - an;
-                results[1] = sQ*Math.Cos(theta + 2*Math.PI/3) - an;
-                results[2] = sQ*Math.Cos(theta + 4*Math.PI/3) - an;
+                results[0] = sQ*(float)Math.Cos(theta) - an;
+                results[1] = sQ* (float)Math.Cos(theta + 2*Math.PI/3) - an;
+                results[2] = sQ* (float)Math.Cos(theta + 4*Math.PI/3) - an;
                 return 3;
             }
             else
             {
-                sQ = Math.Pow(Math.Sqrt(r2 - q3) + Math.Abs(r), 1.0/3.0);
+                sQ = (float)Math.Pow(Math.Sqrt(r2 - q3) + Math.Abs(r), 1.0/3.0);
                 if (r < 0)
                     results[0] = (sQ + q/sQ) - an;
                 else
@@ -76,12 +76,12 @@ namespace MathUtils
             }
         }
 
-        public static int SolveQuartic(double[] x, double[] results)
+        public static int SolveQuartic(float[] x, float[] results)
         {
-            double c1, c2, c3, c4;
+            float c1, c2, c3, c4;
 
             // Make sure the quartic has a leading coefficient of 1.0
-            double c0 = x[0];
+            float c0 = x[0];
             if (Math.Abs(c0 - 1.0) > Epsilon)
             {
                 c1 = x[1]/c0;
@@ -98,33 +98,33 @@ namespace MathUtils
             }
 
             // Compute the cubic resolvant
-            double c12 = c1*c1;
-            double p = -0.37500000*c12 + c2;
-            double q = 0.12500000*c12*c1 - 0.5000*c1*c2 + c3;
-            double r = -0.01171875*c12*c12 + 0.0625*c12*c2 - 0.25*c1*c3 + c4;
+            float c12 = c1*c1;
+            float p = -0.37500000f*c12 + c2;
+            float q = 0.12500000f*c12*c1 - 0.5000f*c1*c2 + c3;
+            float r = -0.01171875f*c12*c12 + 0.0625f*c12*c2 - 0.25f*c1*c3 + c4;
 
-            double[] cubic = new double[4];
-            double[] roots = new double[3];
+            float[] cubic = new float[4];
+            float[] roots = new float[3];
 
-            cubic[0] = 1.0;
-            cubic[1] = -0.5*p;
+            cubic[0] = 1.0f;
+            cubic[1] = -0.5f*p;
             cubic[2] = -r;
-            cubic[3] = 0.5*r*p - 0.125*q*q;
+            cubic[3] = 0.5f*r*p - 0.125f*q*q;
 
             int i = SolveCubic(cubic, roots);
 
-            double z, d2;
+            float z, d2;
 
             if (i > 0) 
                 z = roots[0];
             else 
                 return 0;
 
-            double d1 = 2.0*z - p;
+            float d1 = 2.0f*z - p;
             if (d1 < 0.0)
             {
                 if (d1 > -Epsilon)
-                    d1 = 0.0;
+                    d1 = 0.0f;
                 else
                     return 0;
             }
@@ -134,44 +134,44 @@ namespace MathUtils
                 d2 = z*z - r;
                 if (d2 < 0.0) 
                     return 0;
-                d2 = Math.Sqrt(d2);
+                d2 = (float)Math.Sqrt(d2);
             }
             else
             {
-                d1 = Math.Sqrt(d1);
-                d2 = 0.5*q/d1;
+                d1 = (float)Math.Sqrt(d1);
+                d2 = 0.5f*q/d1;
             }
 
             // Set up useful values for the quadratic factors
-            double q1 = d1*d1;
-            double q2 = -0.25*c1;
+            float q1 = d1*d1;
+            float q2 = -0.25f*c1;
             i = 0;
 
             // Solve the first quadratic
-            p = q1 - 4.0*(z - d2);
+            p = q1 - 4.0f*(z - d2);
             if (Math.Abs(p - 0.0) < Epsilon)
-                results[i++] = -0.5*d1 - q2;
+                results[i++] = -0.5f*d1 - q2;
             else
             {
                 if (p > 0)
                 {
-                    p = Math.Sqrt(p);
-                    results[i++] = -0.5*(d1 + p) + q2;
-                    results[i++] = -0.5*(d1 - p) + q2;
+                    p = (float)Math.Sqrt(p);
+                    results[i++] = -0.5f*(d1 + p) + q2;
+                    results[i++] = -0.5f*(d1 - p) + q2;
                 }
             }
 
             // Solve the second quadratic
-            p = q1 - 4.0*(z + d2);
+            p = q1 - 4.0f*(z + d2);
             if (Math.Abs(p - 0.0) < Epsilon)
-                results[i++] = 0.5*d1 - q2;
+                results[i++] = 0.5f*d1 - q2;
             else
             {
                 if (p > 0)
                 {
-                    p = Math.Sqrt(p);
-                    results[i++] = 0.5*(d1 + p) + q2;
-                    results[i++] = 0.5*(d1 - p) + q2;
+                    p = (float)Math.Sqrt(p);
+                    results[i++] = 0.5f*(d1 + p) + q2;
+                    results[i++] = 0.5f*(d1 - p) + q2;
                 }
             }
 

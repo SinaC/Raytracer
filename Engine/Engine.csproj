@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>Raytracing.Engine</AssemblyName>
+    <RootNamespace>Raytracing.Engine</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MathUtils\MathUtils.csproj" />
+  </ItemGroup>
+</Project>
